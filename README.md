@@ -1,4 +1,6 @@
-# Innovation Agents (Provider-Agnostic Edition)
+# Innovation Engine
+
+**Repository:** [`https://github.com/sabersayadi/Innovation-Engine`](https://github.com/sabersayadi/Innovation-Engine)
 
 An AI-powered platform for analysing invention disclosures (Need, Approach, Benefits per costs, Competition, Technology & IP, Market Intelligence, Funding, and Executive Overview) and exploring sector/patent/research intelligence through a Market Terminal.
 
@@ -92,7 +94,7 @@ flowchart TB
 ## Project Structure
 
 ```text
-innovation-agent/
+Innovation-Engine/
 ├── ai_config.py          # Provider registry, key masking, custom endpoints, role overrides, search config
 ├── ai_routes.py          # Shared /api/ai/* FastAPI routes & embeddable UI widget (/api/ai/widget.js)
 ├── llm.py                # Async streaming adapters (OpenAI, Gemini, Claude, OpenAI-compatible), tool loop, JSON repair
@@ -124,8 +126,10 @@ innovation-agent/
 
 ## Quick Start
 
-### 1. Create virtual environment & install dependencies
+### 1. Clone & install dependencies
 ```bash
+git clone https://github.com/sabersayadi/Innovation-Engine.git
+cd Innovation-Engine
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 ```

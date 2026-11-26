@@ -2,7 +2,7 @@
 
 Research an invention without sending the invention to outside services. A model you control reads the disclosure and decides what may leave. The heavy research, meaning many web searches and long reports, runs at cloud providers but only ever sees a public description of the field. So no large in-house computer is needed: the secure zone only does two light tasks.
 
-This is a standalone prototype, to be merged into the newer version of the app later. It reuses `run.py` (subscription check, `agent_options`) and `tools.py` (data tools) and changes neither.
+This is a standalone prototype, to be merged into the newer version of the app later. It reuses `run.py` (`agent_options`) and `tools.py` (data tools) through the provider-agnostic `llm.py` runtime.
 
 ## How it works
 
@@ -29,7 +29,9 @@ Disclosure (PDF or text)
 From the project folder:
 
 ```bash
-.venv/bin/python firewall/pipeline.py disclosures/test-leak-detector.pdf
+.venv/bin/python firewall/pipeline.py disclosures/test-leak-detector.pdf \
+  --secure-provider openai_compatible --secure-model qwen2.5:32b --secure-base-url http://localhost:11434/v1 \
+  --research-provider openai --research-model gpt-4.1
 ```
 
 Each run gets a folder in `firewall/runs/<date>_<time>_<disclosure>/`:
@@ -45,9 +47,7 @@ Each run gets a folder in `firewall/runs/<date>_<time>_<disclosure>/`:
 
 ## The secure-zone model
 
-`secure_model()` in [pipeline.py](pipeline.py) is the only place the full disclosure goes. For now it is a stand-in: Claude on your subscription with no tools. **So in steps 1 and 4 the disclosure still goes to Anthropic. Use fictional or public disclosures only** until a real local model replaces it.
-
-To switch to a local model, replace the body of `secure_model()` with a call to a model running on hardware you control, for example in Aalto's SECDATA environment. It must take instructions and text and return text. With `schema` set, it must return JSON in that shape; many local model servers support this directly. Nothing else in the pipeline has to change.
+`secure_model()` in [pipeline.py](pipeline.py) is the only place the full disclosure goes. It uses the `firewall_secure` role override (configurable in AI Settings or via `--secure-provider`, `--secure-model`, `--secure-base-url`) with no tools or file access, so you can point it directly at a local OpenAI-compatible server (Ollama, vLLM, LM Studio, or Aalto's SECDATA environment) while the research zone runs on any cloud provider (`--research-provider`, `--research-model`). If `firewall_secure` is pointed at a cloud provider, use fictional or public disclosures only.
 
 The local model's jobs are small. In the test run:
 - Step 1 read about 1,000 tokens and wrote a short JSON brief.
